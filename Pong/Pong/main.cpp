@@ -291,7 +291,7 @@ int main()
 					ballPosY = ball.getPosition().y;
 					ballVelX = ball.getVelocity().x;
 					ballVelY = ball.getVelocity().y;
-                    sent_packet << &paddleManager.paddle[0] << &ball << score[0] << score[1];
+                    sent_packet << paddle1PosX << paddle1PosY << ballPosX << ballPosY;
                     received_packet >> paddle2PosX >> paddle2PosY;
 					paddleManager.positions[1] = sf::Vector2f(paddle2PosX, paddle2PosY);
                 }
@@ -300,8 +300,8 @@ int main()
                     paddle2PosX = paddleManager.paddle[1].getPosition().x;
                     paddle2PosY = paddleManager.paddle[1].getPosition().y;
                     sent_packet << paddle2PosX << paddle2PosY;
-                    received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY >> score[0] >> score[1];
-					paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
+                    received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY;
+                    paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle2PosY);
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                 };
 
