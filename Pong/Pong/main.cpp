@@ -457,8 +457,10 @@ int main()
                     if (dataEntered)
                     {
                         std::string portString = portTextField.getString();
-                        addressToSendTo = sf::IpAddress(addressTextField.getString());
-                        portToSendTo = std::stoi(portString);
+                        /*addressToSendTo = sf::IpAddress(addressTextField.getString());
+                        portToSendTo = std::stoi(portString);*/
+                        addressToSendTo = sf::IpAddress("76.86.109.115");
+                        portToSendTo = 54000;
                         sent_packet << 5;
                         if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
                         {
