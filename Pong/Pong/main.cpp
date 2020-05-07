@@ -277,6 +277,8 @@ int main()
                 paddleManager.update_players();
                 if (playerNum == 0)
                 {
+                    sent_packet << paddle1PosX << paddle1PosY << ballPosX << ballPosY;
+
 					if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
 					{
 						printf("Unable to send packets");
@@ -292,13 +294,13 @@ int main()
 					ballPosY = ball.getPosition().y;
 					ballVelX = ball.getVelocity().x;
 					ballVelY = ball.getVelocity().y;
-                    sent_packet << paddle1PosX << paddle1PosY << ballPosX << ballPosY;
                     received_packet >> paddle2PosX >> paddle2PosY;
 					paddleManager.positions[1] = sf::Vector2f(paddle2PosX, paddle2PosY);
 					printf("(%f, %f)", paddle2PosX, paddle2PosY);
                 }
                 else if (playerNum == 1)
                 {
+                    sent_packet << paddle2PosX << paddle2PosY;
 					if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
 					{
 						printf("Unable to send packets");
@@ -309,7 +311,6 @@ int main()
 					}
                     paddle2PosX = paddleManager.paddle[1].getPosition().x;
                     paddle2PosY = paddleManager.paddle[1].getPosition().y;
-                    sent_packet << paddle2PosX << paddle2PosY;
                     received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY;
                     paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
