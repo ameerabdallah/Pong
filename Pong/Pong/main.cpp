@@ -303,7 +303,7 @@ int main()
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                 };
 
-                if (isServing && playerNum != 0)
+                if (isServing && playerNum == 0)
                 {
                     if (playerServing == 0)
                     {
