@@ -284,24 +284,22 @@ int main()
                 paddleManager.update_players();
                 if (playerNum == 0)
                 {
+                    ball.update_ball(isServing);
 					paddle1PosX = paddleManager.paddle[0].getPosition().x;
 					paddle1PosY = paddleManager.paddle[0].getPosition().y;
 					ballPosX = ball.getPosition().x;
 					ballPosY = ball.getPosition().y;
 					ballVelX = ball.getVelocity().x;
 					ballVelY = ball.getVelocity().y;
-                    sent_packet << &paddleManager;
-                    sent_packet << &ball;
-                    sent_packet << score[0] << score[1];
+                    sent_packet << &paddleManager.paddle[0] << &ball << score[0] << score[1];
                     received_packet >> paddle2PosX >> paddle2PosY;
 					paddleManager.positions[1] = sf::Vector2f(paddle2PosX, paddle2PosY);
                 }
                 else if (playerNum == 1)
                 {
-                    sent_packet << &paddleManager.paddle[1];
+                    sent_packet << paddle2PosX << paddle2PosY;
                     received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY >> score[0] >> score[1];
 					paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
-                    paddleManager.update_players();
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                 };
 
@@ -369,7 +367,6 @@ int main()
                         isServing = true;
                         playerServing = 1;
                     }
-					ball.update_ball(isServing);
                 }
 
 

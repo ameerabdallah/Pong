@@ -39,6 +39,7 @@ sf::Vector2f Ball::getPosition()
 void Ball::setPosition(sf::Vector2f position)
 {
 	this->position = position;
+	ball.setPosition(position);
 }
 
 sf::Vector2f Ball::getVelocity()
