@@ -235,15 +235,6 @@ int main()
             paddleManager.movePaddle(playerNum, -1);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        {
-            paddleManager.movePaddle(1, 1);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
-            paddleManager.movePaddle(1, -1);
-        }
-
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
         {
@@ -304,7 +295,7 @@ int main()
                     ballVelX = ball.getVelocity().x;
                     ballVelY = ball.getVelocity().y;
                 }
-                else if (playerNum == 0)
+                else if (playerNum == 1)
                 {
                     sent_packet << &paddleManager.paddle[1];
                     received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY >> score[0] >> score[1];
@@ -312,7 +303,7 @@ int main()
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                 };
 
-                if (isServing)
+                if (isServing && playerNum != 0)
                 {
                     if (playerServing == 0)
                     {
@@ -327,7 +318,8 @@ int main()
                     }
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                 }
-                else if (playerNum == 0)
+
+                if (playerNum == 0)
                 {
                     if (ballPosX < paddle1PosX + paddleWidth + globalConsts::ballRadius)
                     {
