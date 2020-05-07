@@ -272,6 +272,14 @@ int main()
             case (GAME):
 
                 paddleManager.update_players();
+                if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
+                {
+                    printf("Unable to send packets");
+                }
+                if (socket.receive(received_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
+                {
+                    printf("Unable to receive packets");
+                }
 
                 if (isServing && playerNum == 0)
                 {
@@ -347,14 +355,6 @@ int main()
                     ballPosY = ball.getPosition().y;
                     sent_packet << paddle1PosX << paddle1PosY << ballPosX << ballPosY;
 
-					if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
-					{
-						printf("Unable to send packets");
-					}
-					if (socket.receive(received_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
-					{
-						printf("Unable to receive packets");
-					}
 
                     ball.update_ball(isServing);
 					ballVelX = ball.getVelocity().x;
@@ -369,14 +369,6 @@ int main()
 					paddle2PosY = paddleManager.paddle[1].getPosition().y;
                     sent_packet << paddle2PosX << paddle2PosY;
 
-					if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
-					{
-						printf("Unable to send packets");
-					}
-					if (socket.receive(received_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
-					{
-						printf("Unable to receive packets");
-					}
                     if (received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY)
                     {
                         printf("Data Extracted: Paddle1: (%f %f), Ball: (%f %f)\n", paddle1PosX, paddle1PosY);
