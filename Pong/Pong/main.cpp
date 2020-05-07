@@ -238,10 +238,6 @@ int main()
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
         {
-            if (!waitingToConnect)
-            {
-                
-            }
 
             // Game Variables
             float paddleWidth = paddleManager.paddle[0].getSize().x;
@@ -291,6 +287,7 @@ int main()
 					{
 						printf("Unable to receive packets");
 					}
+
                     ball.update_ball(isServing);
 					ballVelX = ball.getVelocity().x;
 					ballVelY = ball.getVelocity().y;
@@ -502,9 +499,9 @@ int main()
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                         {
                             dataEntered = true;
-                            if (socket.bind(54000) != sf::Socket::Done)
+                            if (socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done)
                             {
-                                printf("Unable to bind to port 54000");
+                                printf("Unable to bind to port");
                             }
                         }
                         connectRect.setFillColor(sf::Color::Magenta);
