@@ -296,7 +296,6 @@ int main()
 					ballVelY = ball.getVelocity().y;
                     received_packet >> paddle2PosX >> paddle2PosY;
 					paddleManager.positions[1] = sf::Vector2f(paddle2PosX, paddle2PosY);
-					printf("(%f, %f)", paddle2PosX, paddle2PosY);
                 }
                 else if (playerNum == 1)
                 {
