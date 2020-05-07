@@ -313,8 +313,8 @@ int main()
                     received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY;
                     paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
-					printf
-                };
+					
+                }
 
                 if (isServing && playerNum == 0)
                 {
