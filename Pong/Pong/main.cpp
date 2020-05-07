@@ -311,7 +311,10 @@ int main()
 					{
 						printf("Unable to receive packets");
 					}
-                    received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY;
+                    if (received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY)
+                    {
+                        printf("Data Extracted: Paddle1: (%f %f), Ball: (%f %f)\n", paddle1PosX, paddle1PosY);
+                    }
                     paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
 					
