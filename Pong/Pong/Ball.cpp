@@ -36,6 +36,7 @@ sf::Vector2f Ball::getPosition()
 {
 	return position;
 }
+
 void Ball::setPosition(sf::Vector2f position)
 {
 	this->position = position;

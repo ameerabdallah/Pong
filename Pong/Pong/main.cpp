@@ -287,7 +287,7 @@ int main()
 					{
 						printf("Unable to send packets");
 					}
-					if (socket.receive(received_packet, senderAddress, senderPort) != sf::Socket::Done)
+					if (socket.receive(received_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
 					{
 						printf("Unable to receive packets");
 					}
@@ -303,11 +303,12 @@ int main()
 					paddle2PosX = paddleManager.paddle[1].getPosition().x;
 					paddle2PosY = paddleManager.paddle[1].getPosition().y;
                     sent_packet << paddle2PosX << paddle2PosY;
+
 					if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
 					{
 						printf("Unable to send packets");
 					}
-					if (socket.receive(received_packet, senderAddress, senderPort) != sf::Socket::Done)
+					if (socket.receive(received_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
 					{
 						printf("Unable to receive packets");
 					}
@@ -315,7 +316,9 @@ int main()
                     {
                         printf("Data Extracted: Paddle1: (%f %f), Ball: (%f %f)\n", paddle1PosX, paddle1PosY);
                     }
-                    paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
+
+                    paddleManager.positions[0].x = paddle1PosX;
+                    paddleManager.positions[0].y = paddle1PosY;
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
 					
                 }
