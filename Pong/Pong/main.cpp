@@ -493,6 +493,10 @@ int main()
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                         {
                             dataEntered = true;
+                            if (socket.bind(54000) != sf::Socket::Done)
+                            {
+                                printf("Unable to bind to port 54000");
+                            }
                         }
                         connectRect.setFillColor(sf::Color::Magenta);
                     }
