@@ -297,6 +297,8 @@ int main()
                 }
                 else if (playerNum == 1)
                 {
+                    paddle2PosX = paddleManager.paddle[1].getPosition().x;
+                    paddle2PosY = paddleManager.paddle[1].getPosition().y;
                     sent_packet << paddle2PosX << paddle2PosY;
                     received_packet >> paddle1PosX >> paddle1PosY >> ballPosX >> ballPosY >> score[0] >> score[1];
 					paddleManager.positions[0] = sf::Vector2f(paddle1PosX, paddle1PosY);
