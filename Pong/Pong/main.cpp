@@ -279,6 +279,8 @@ int main()
                 {
 					paddle1PosX = paddleManager.paddle[0].getPosition().x;
 					paddle1PosY = paddleManager.paddle[0].getPosition().y;
+                    ballPosX = ball.getPosition().x;
+                    ballPosY = ball.getPosition().y;
                     sent_packet << paddle1PosX << paddle1PosY << ballPosX << ballPosY;
 
 					if (socket.send(sent_packet, addressToSendTo, portToSendTo) != sf::Socket::Done)
@@ -290,8 +292,6 @@ int main()
 						printf("Unable to receive packets");
 					}
                     ball.update_ball(isServing);
-					ballPosX = ball.getPosition().x;
-					ballPosY = ball.getPosition().y;
 					ballVelX = ball.getVelocity().x;
 					ballVelY = ball.getVelocity().y;
                     received_packet >> paddle2PosX >> paddle2PosY;
