@@ -81,6 +81,8 @@ int main()
         std::cout << "Please enter the port number:\n";
         std::cin >> portToSendTo;
 
+        std::cout << "Port to send to: " << portToSendTo << std::endl; 
+
         socket.send(sent_packet, addressToSendTo, portToSendTo);
     }
     else if (userInput == "h")
@@ -97,6 +99,8 @@ int main()
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
             received_packet >> key;
+            std::cout << "Joining!\n";
+            std::cout << key << std::endl;
         }
 
     }
