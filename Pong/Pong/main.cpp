@@ -156,7 +156,6 @@ int main()
             {
                 paddleManager.positions[playerNum].y = windowHeight - globalConsts::windowBufferSize - paddleHeight;
             }
-            paddleManager.movePaddle(playerNum, -1);
         }
 
         // Game Logic
