@@ -108,6 +108,21 @@ int main()
     // Window
     while (window.isOpen())
     {
+        if (playerNum == 0)
+        {
+            sent_packet << paddleManager.paddle[0] << ball << score[0] << score[1];
+            socket.send(sent_packet, addressToSendTo, portToSendTo);
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
+            received_packet >> paddleManager.paddle[1];
+        }
+        else if (playerNum == 1)
+        {
+            sent_packet << paddleManager.paddle[1];
+            socket.send(sent_packet, addressToSendTo, portToSendTo);
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
+            received_packet >> paddleManager.paddle[0] >> ball >> score[0] >> score[1];
+        }
+
         sf::Event event;
         sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
@@ -164,20 +179,7 @@ int main()
 
             paddleManager.update_players();
 
-            if (playerNum == 0)
-            {
-                sent_packet << paddleManager.paddle[0] << ball << score[0] << score[1];
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
-                socket.receive(received_packet, addressToSendTo, portToSendTo);
-                received_packet >> paddleManager.paddle[1];
-            }
-            else if (playerNum == 1)
-            {
-                sent_packet << paddleManager.paddle[1];
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
-                socket.receive(received_packet, addressToSendTo, portToSendTo);
-                received_packet >> paddleManager.paddle[0] >> ball >> score[0] >> score[1];
-            }
+            
 
             if (isServing && playerNum == 0)
             {
