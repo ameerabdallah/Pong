@@ -64,13 +64,3 @@ sf::CircleShape Ball::getBall()
 {
 	return ball;
 }
-
-sf::Packet& operator <<(sf::Packet& packet, const Ball& ball)
-{
-	return packet << ball.position.x << ball.position.y;
-}
-
-sf::Packet& operator >>(sf::Packet& packet, Ball& ball)
-{
-	return packet >> ball.position.x >> ball.position.y;
-}

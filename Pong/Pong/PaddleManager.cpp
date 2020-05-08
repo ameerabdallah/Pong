@@ -45,19 +45,3 @@ void PaddleManager::movePaddle(int player, int direction)
 		positions[player].y = globalConsts::windowBufferSize;
 	}
 }
-
-sf::Packet& operator <<(sf::Packet& packet, const sf::RectangleShape& paddle)
-{
-	float paddlePosX = paddle.getPosition().x;
-	float paddlePosY = paddle.getPosition().y;
-
-	return packet << paddlePosX << paddlePosY;
-}
-
-sf::Packet& operator >>(sf::Packet& packet, sf::RectangleShape paddle)
-{
-	float paddlePosX = paddle.getPosition().x;
-	float paddlePosY = paddle.getPosition().y;
-
-	return packet >> paddlePosX >> paddlePosY;
-}
