@@ -156,11 +156,13 @@ int main()
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
+                sent_packet.clear();
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
+                sent_packet.clear();
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -175,12 +177,14 @@ int main()
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
+                sent_packet.clear();
 
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
+                sent_packet.clear();
             }
 
         }
@@ -249,6 +253,7 @@ int main()
                 ball.update_ball(isServing);
                 sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
+                sent_packet.clear();
 
                 if (ballPosX < paddleManager.positions[0].x + paddleWidth + globalConsts::ballRadius)
                 {
