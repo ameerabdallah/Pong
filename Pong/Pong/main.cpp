@@ -8,11 +8,6 @@
 
 
 void update_score(sf::Text& score1, sf::Text& score2, sf::Int8 score[2]);
-sf::Packet& operator <<(sf::Packet& packet, const sf::RectangleShape& paddle);
-sf::Packet& operator >>(sf::Packet& packet, sf::RectangleShape& paddle);
-sf::Packet& operator >>(sf::Packet& packet, Ball& ball);
-sf::Packet& operator <<(sf::Packet& packet, Ball& ball);
-
 
 int main()
 {
@@ -110,10 +105,10 @@ int main()
     {
         float paddleWidth = paddleManager.paddle[0].getSize().x;
         float paddleHeight = paddleManager.paddle[0].getSize().y;
-        float paddle1PosX = paddleManager.paddle[0].getPosition().x;
-        float paddle1PosY = paddleManager.paddle[0].getPosition().y;
-        float paddle2PosX = paddleManager.paddle[1].getPosition().x;
-        float paddle2PosY = paddleManager.paddle[1].getPosition().y;
+        float paddle1PosX = paddleManager.positions[0].x;
+        float paddle1PosY = paddleManager.positions[0].y;
+        float paddle2PosX = paddleManager.positions[1].x;
+        float paddle2PosY = paddleManager.positions[1].y;
         float ballPosX = ball.getPosition().x;
         float ballPosY = ball.getPosition().y;
         float ballVelX = ball.getVelocity().x;
@@ -178,28 +173,24 @@ int main()
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
         {
-            ball.update_ball(isServing);
             // Game Variables
             paddleWidth = paddleManager.paddle[0].getSize().x;
             paddleHeight = paddleManager.paddle[0].getSize().y;
-            paddle1PosX = paddleManager.paddle[0].getPosition().x;
-            paddle1PosY = paddleManager.paddle[0].getPosition().y;
-            paddle2PosX = paddleManager.paddle[1].getPosition().x;
-            paddle2PosY = paddleManager.paddle[1].getPosition().y;
+            paddle1PosX = paddleManager.positions[0].x;
+            paddle1PosY = paddleManager.positions[0].y;
+            paddle2PosX = paddleManager.positions[1].x;
+            paddle2PosY = paddleManager.positions[1].y;
             ballPosX = ball.getPosition().x;
             ballPosY = ball.getPosition().y;
             ballVelX = ball.getVelocity().x;
             ballVelY = ball.getVelocity().y;
-
-            paddleManager.update_players();
-
             
 
             if (isServing && playerNum == 0)
             {
                 if (playerServing == 0)
                 {
-                        
+
                     ballPosX = paddle1PosX + paddleWidth + globalConsts::ballRadius;
                     ballPosY = paddle1PosY + (paddleHeight / 2);
                 }
@@ -213,6 +204,7 @@ int main()
 
             if (playerNum == 0)
             {
+                ball.update_ball(isServing);
                 if (ballPosX < paddle1PosX + paddleWidth + globalConsts::ballRadius)
                 {
                     if (ballPosY < paddle1PosY + paddleHeight && ballPosY >= paddle1PosY + (2 * (paddleHeight / 3)))
