@@ -15,7 +15,6 @@ int main()
     const char OP_BALL_POSITION = 'B';
     const char OP_SCORE = 'S';
 
-
     sf::RenderWindow window(sf::VideoMode(1024, 512), "PONG");
 
     srand(time(NULL));
@@ -117,7 +116,6 @@ int main()
         float ballPosX = ball.getPosition().x;
         float ballPosY = ball.getPosition().y;
 
-
         sf::Event event;
         sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
@@ -201,6 +199,7 @@ int main()
             }
             
         }
+
         if (playerNum == 1)
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
@@ -302,25 +301,6 @@ int main()
                     isServing = true;
                     playerServing = 1;
                 }
-            }
-
-            // Send & Receive Packets
-            // Send & Receive Packets
-            if (playerNum == 0)
-            {
-                // Receive Packet
-                socket.receive(received_packet, addressToSendTo, portToSendTo);
-                received_packet >> paddleManager.positions[1].x >> paddleManager.positions[1].y;
-            }
-            else if (playerNum == 1)
-            {
-                // Send packet
-
-                // Receive Packet
-                socket.receive(received_packet, addressToSendTo, portToSendTo);
-                received_packet >> paddleManager.positions[0].x >> paddleManager.positions[0].y >> ballPosX >> ballPosY >> score[0] >> score[1];
-
-                ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
             }
 
             paddleManager.update_players();
