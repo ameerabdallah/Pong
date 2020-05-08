@@ -11,6 +11,11 @@ void update_score(sf::Text& score1, sf::Text& score2, sf::Int8 score[2]);
 
 int main()
 {
+    const char OP_PADDLE_POSITION = 'P';
+    const char OP_BALL_POSITION = 'B';
+    const char OP_SCORE = 'S';
+
+
     sf::RenderWindow window(sf::VideoMode(1024, 512), "PONG");
 
     srand(time(NULL));
@@ -24,6 +29,8 @@ int main()
     const unsigned int windowWidth = window.getSize().x;
     const unsigned int windowHeight = window.getSize().y;
 
+    char opCode = ' ';
+    char* opCodePtr = &opCode;
 
     // Game font
     sf::Font font;
@@ -55,6 +62,7 @@ int main()
     int playerServing = 0;
     sf::Int8 score[2] = { 0, 0 };
     std::string userInput;
+
 
     std::cout << "Press (j) to Join a game and press (h) to host one\n";
     std::cin >> userInput;
@@ -102,7 +110,7 @@ int main()
 
     float paddleWidth = paddleManager.paddle[0].getSize().x;
     float paddleHeight = paddleManager.paddle[0].getSize().y;
-    
+    socket.setBlocking(false);
     // Window
     while (window.isOpen())
     {
@@ -146,6 +154,16 @@ int main()
             {
                 paddleManager.positions[playerNum].y = globalConsts::windowBufferSize;
             }
+            if (playerNum == 0)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
+                socket.send(sent_packet, addressToSendTo, portToSendTo);
+            }
+            if (playerNum == 1)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
+                socket.send(sent_packet, addressToSendTo, portToSendTo);
+            }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
@@ -154,8 +172,55 @@ int main()
             {
                 paddleManager.positions[playerNum].y = windowHeight - globalConsts::windowBufferSize - paddleHeight;
             }
+
+            if (playerNum == 0)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
+                socket.send(sent_packet, addressToSendTo, portToSendTo);
+
+            }
+            if (playerNum == 1)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
+                socket.send(sent_packet, addressToSendTo, portToSendTo);
+            }
+
         }
 
+
+        // Receive Data
+        if (playerNum == 0)
+        {
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
+            received_packet >> opCodePtr;
+            switch (*opCodePtr)
+            {
+            case(OP_PADDLE_POSITION):
+                received_packet >> paddleManager.positions[1].y;
+                break;
+            }
+            
+        }
+        if (playerNum == 1)
+        {
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
+            received_packet >> opCodePtr;
+
+            switch (*opCodePtr)
+            {
+            case(OP_PADDLE_POSITION):
+                received_packet >> paddleManager.positions[0].y;
+                break;
+            case(OP_BALL_POSITION):
+                received_packet >> ballPosX >> ballPosY;
+                ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
+                break;
+            case(OP_SCORE):
+                received_packet >> score[0] >> score[1];
+                update_score(score1, score2, score);
+                break;
+            }
+        }
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
         {
@@ -183,6 +248,9 @@ int main()
             if (playerNum == 0)
             {
                 ball.update_ball(isServing);
+                sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
+                socket.send(sent_packet, addressToSendTo, portToSendTo);
+
                 if (ballPosX < paddleManager.positions[0].x + paddleWidth + globalConsts::ballRadius)
                 {
                     if (ballPosY < paddleManager.positions[0].y + paddleHeight && ballPosY >= paddleManager.positions[0].y + (2 * (paddleHeight / 3)))
@@ -240,10 +308,6 @@ int main()
             // Send & Receive Packets
             if (playerNum == 0)
             {
-                // Send packet
-                sent_packet << paddleManager.positions[0].x << paddleManager.positions[0].y << ballPosX << ballPosY << score[0] << score[1];
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
-
                 // Receive Packet
                 socket.receive(received_packet, addressToSendTo, portToSendTo);
                 received_packet >> paddleManager.positions[1].x >> paddleManager.positions[1].y;
@@ -251,8 +315,6 @@ int main()
             else if (playerNum == 1)
             {
                 // Send packet
-                sent_packet << paddleManager.positions[1].x << paddleManager.positions[1].y;
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
 
                 // Receive Packet
                 socket.receive(received_packet, addressToSendTo, portToSendTo);
