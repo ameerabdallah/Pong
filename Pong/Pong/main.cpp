@@ -109,6 +109,8 @@ int main()
 
     float paddleWidth = paddleManager.paddle[0].getSize().x;
     float paddleHeight = paddleManager.paddle[0].getSize().y;
+
+    sent_packet.clear();
     socket.setBlocking(false);
     // Window
     while (window.isOpen())
