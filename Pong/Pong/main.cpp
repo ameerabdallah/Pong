@@ -108,8 +108,6 @@ int main()
     {
         float ballPosX = ball.getPosition().x;
         float ballPosY = ball.getPosition().y;
-        float ballVelX = ball.getVelocity().x;
-        float ballVelY = ball.getVelocity().y;
 
 
         sf::Event event;
@@ -258,7 +256,7 @@ int main()
 
                 // Receive Packet
                 socket.receive(received_packet, addressToSendTo, portToSendTo);
-                received_packet >> paddleManager.positions[1].x >> paddleManager.positions[1].y >> ballPosX >> ballPosY >> score[0] >> score[1];
+                received_packet >> paddleManager.positions[0].x >> paddleManager.positions[0].y >> ballPosX >> ballPosY >> score[0] >> score[1];
 
                 ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
             }
