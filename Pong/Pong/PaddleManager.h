@@ -14,8 +14,8 @@ struct PaddleManager
 	// Functions
 	PaddleManager(sf::Vector2u windowSize);
 	void update_players();
-	void movePaddle(int player, int direction); // UP is direction = 1, DOWN is direction = -1
-protected:
+	void movePaddle(int player, int direction);
+	void set_position(int player, sf::Vector2f pos);
 
 private:
 	// Constants

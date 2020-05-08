@@ -1,10 +1,5 @@
 #include "PaddleManager.h"
 
-void PaddleManager::update_players()
-{
-	paddle[0].setPosition(positions[0].x, positions[0].y);
-	paddle[1].setPosition(positions[1].x, positions[1].y);
-}
 
 PaddleManager::PaddleManager(sf::Vector2u windowSize)
 {
@@ -33,15 +28,14 @@ PaddleManager::PaddleManager(sf::Vector2u windowSize)
 	this->windowSize = windowSize;
 }
 
-void PaddleManager::movePaddle(int player, int direction)
+void PaddleManager::update_players()
 {
-	positions[player].y -= velocity*direction;
-	if (positions[player].y + paddleSize.y > windowSize.y - globalConsts::windowBufferSize)
-	{
-		positions[player].y = windowSize.y - globalConsts::windowBufferSize - paddleSize.y;
-	}
-	if (positions[player].y < globalConsts::windowBufferSize)
-	{
-		positions[player].y = globalConsts::windowBufferSize;
-	}
+	paddle[0].setPosition(positions[0].x, positions[0].y);
+	paddle[1].setPosition(positions[1].x, positions[1].y);
+}
+
+void PaddleManager::set_position(int player, sf::Vector2f pos)
+{
+	positions[player] = pos;
+	paddle[player].setPosition(pos);
 }
