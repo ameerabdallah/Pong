@@ -69,7 +69,7 @@ int main()
         sf::Int8 key = 10;
         sent_packet << key;
 
-        if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+        if (socket.bind(54001) != sf::Socket::Done)
         {
             std::cout << "Failed to bind port: " << socket.getLocalPort() << "\n";
         }
@@ -89,7 +89,7 @@ int main()
     { 
         playerNum = 0;
         sf::Int8 key = -1;
-        if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+        if (socket.bind(54000) != sf::Socket::Done)
         {
             std::cout << "Failed to bind port: " << socket.getLocalPort() << "\n";
         }
