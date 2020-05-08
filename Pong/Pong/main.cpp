@@ -7,7 +7,7 @@
 #include "GlobalConstants.h"
 
 
-void update_score(sf::Text& score1, sf::Text& score2, int score[2]);
+void update_score(sf::Text& score1, sf::Text& score2, sf::Int8 score[2]);
 sf::Packet& operator <<(sf::Packet& packet, const sf::RectangleShape& paddle);
 sf::Packet& operator >>(sf::Packet& packet, sf::RectangleShape& paddle);
 sf::Packet& operator >>(sf::Packet& packet, Ball& ball);
@@ -58,7 +58,7 @@ int main()
     bool isServing = true;
     int playerNum = 0;
     int playerServing = 0;
-    int score[2] = { 0, 0 };
+    sf::Int8 score[2] = { 0, 0 };
     std::string userInput;
 
     std::cout << "Press (j) to Join a game and press (h) to host one\n";
@@ -108,19 +108,33 @@ int main()
     // Window
     while (window.isOpen())
     {
+        float paddleWidth = paddleManager.paddle[0].getSize().x;
+        float paddleHeight = paddleManager.paddle[0].getSize().y;
+        float paddle1PosX = paddleManager.paddle[0].getPosition().x;
+        float paddle1PosY = paddleManager.paddle[0].getPosition().y;
+        float paddle2PosX = paddleManager.paddle[1].getPosition().x;
+        float paddle2PosY = paddleManager.paddle[1].getPosition().y;
+        float ballPosX = ball.getPosition().x;
+        float ballPosY = ball.getPosition().y;
+        float ballVelX = ball.getVelocity().x;
+        float ballVelY = ball.getVelocity().y;
+
         if (playerNum == 0)
         {
-            sent_packet << paddleManager.paddle[0] << ball << score[0] << score[1];
+            sent_packet << paddle1PosX << paddle1PosY << ballPosX << ballPosY << score[0] << score[1];
             socket.send(sent_packet, addressToSendTo, portToSendTo);
             socket.receive(received_packet, addressToSendTo, portToSendTo);
-            received_packet >> paddleManager.paddle[1];
+            received_packet >> paddle2PosX >> paddle2PosY;
+            paddleManager.paddle[1].setPosition(paddle2PosX, paddle2PosY);
         }
         else if (playerNum == 1)
         {
-            sent_packet << paddleManager.paddle[1];
+            sent_packet << paddle2PosX << paddle2PosY;
             socket.send(sent_packet, addressToSendTo, portToSendTo);
             socket.receive(received_packet, addressToSendTo, portToSendTo);
-            received_packet >> paddleManager.paddle[0] >> ball >> score[0] >> score[1];
+            received_packet >> paddle1PosX >> paddle2PosY >> ballPosX >> ballPosY >> score[0] >> score[1];
+            paddleManager.paddle[0].setPosition(paddle1PosX, paddle1PosY);
+            ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
         }
 
         sf::Event event;
@@ -166,16 +180,16 @@ int main()
         {
             ball.update_ball(isServing);
             // Game Variables
-            float paddleWidth = paddleManager.paddle[0].getSize().x;
-            float paddleHeight = paddleManager.paddle[0].getSize().y;
-            float paddle1PosX = paddleManager.paddle[0].getPosition().x;
-            float paddle1PosY = paddleManager.paddle[0].getPosition().y;
-            float paddle2PosX = paddleManager.paddle[1].getPosition().x;
-            float paddle2PosY = paddleManager.paddle[1].getPosition().y;
-            float ballPosX = ball.getPosition().x;
-            float ballPosY = ball.getPosition().y;
-            float ballVelX = ball.getVelocity().x;
-            float ballVelY = ball.getVelocity().y;
+            paddleWidth = paddleManager.paddle[0].getSize().x;
+            paddleHeight = paddleManager.paddle[0].getSize().y;
+            paddle1PosX = paddleManager.paddle[0].getPosition().x;
+            paddle1PosY = paddleManager.paddle[0].getPosition().y;
+            paddle2PosX = paddleManager.paddle[1].getPosition().x;
+            paddle2PosY = paddleManager.paddle[1].getPosition().y;
+            ballPosX = ball.getPosition().x;
+            ballPosY = ball.getPosition().y;
+            ballVelX = ball.getVelocity().x;
+            ballVelY = ball.getVelocity().y;
 
             paddleManager.update_players();
 
@@ -270,34 +284,7 @@ int main()
     }
 }
 
-// paddle packet operators
-sf::Packet& operator <<(sf::Packet& packet, const sf::RectangleShape& paddle)
-{
-    return packet << paddle.getPosition().x << paddle.getPosition().y;
-}
-sf::Packet& operator >>(sf::Packet& packet, sf::RectangleShape& paddle)
-{
-    float paddleX, paddleY;
-    packet >> paddleX >> paddleY;
-    paddle.setPosition(paddleX, paddleY);
-    return packet;
-}
-
-// Ball packet operators
-sf::Packet& operator <<(sf::Packet& packet, Ball& ball)
-{
-    return packet << ball.getPosition().x << ball.getPosition().y;
-}
-
-sf::Packet& operator >>(sf::Packet& packet, Ball& ball)
-{
-    float ballX, ballY;
-    packet >> ballX >> ballY;
-    ball.setPosition(sf::Vector2f(ballX, ballY));
-    return packet;
-}
-
-void update_score(sf::Text& score1, sf::Text& score2, int score[2])
+void update_score(sf::Text& score1, sf::Text& score2, sf::Int8 score[2])
 {
     score1.setString(std::to_string(score[0]));
     score2.setString(std::to_string(score[1]));
