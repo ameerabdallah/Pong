@@ -72,7 +72,7 @@ int main()
         sf::Int8 key = 10;
         sent_packet << key;
 
-        if (socket.bind(54001) != sf::Socket::Done)
+        if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
         {
             std::cout << "Failed to bind port: " << socket.getLocalPort() << "\n";
         }
@@ -97,7 +97,7 @@ int main()
     { 
         playerNum = 0;
         sf::Int8 key = -1;
-        if (socket.bind(54000) != sf::Socket::Done)
+        if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
         {
             std::cout << "Failed to bind port: " << socket.getLocalPort() << "\n";
         }
@@ -150,7 +150,9 @@ int main()
                     if (playerServing == 1 && playerNum == 1)
                     {
                         ball.setVelocity(sf::Vector2f(-1, 0), ballVelocity);
-                        
+                        sent_packet << OP_BALL_VEL << ball.getVelocity().x << ball.getVelocity().y;
+                        socket.send(sent_packet, player2IP, player2Port);
+                        sent_packet.clear();
                     }
                     break;
                 }
@@ -213,6 +215,12 @@ int main()
                 {
                     received_packet >> paddleManager.positions[1].y;
                     received_packet.clear();
+                }
+                if (opCode == OP_BALL_VEL)
+                {
+                    float ballVelocityX, ballVelocityY;
+                    received_packet >> ballVelocityX >> ballVelocityY;
+                    ball.setVelocity(sf::Vector2f(ballVelocityX, ballVelocityY), ballVelocity);
                 }
             }
             
@@ -310,7 +318,7 @@ int main()
                 }
                 if (ballPosY > windowHeight - globalConsts::windowBufferSize) 
                 {
-                    ball.setPosition(sf::Vector2f(ballPosX, globalConsts::windowBufferSize + globalConsts::ballRadius + 5));
+                    ball.setPosition(sf::Vector2f(ballPosX, windowHeight - globalConsts::windowBufferSize - globalConsts::ballRadius - 5));
                     ball.setVelocity(sf::Vector2f(ball.getVelocity().x / abs(ball.getVelocity().x), -ball.getVelocity().y / abs(ball.getVelocity().y)), ballVelocity);
                 }
                 if (ballPosY + globalConsts::ballRadius < globalConsts::windowBufferSize)
