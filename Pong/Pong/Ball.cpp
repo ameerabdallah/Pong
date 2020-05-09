@@ -51,8 +51,6 @@ sf::Vector2f Ball::getVelocity()
 void Ball::setVelocity(sf::Vector2f velocity, float multiplier)
 {
 	float norm = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-	if (velocity.x == 0) velocity.x = (rand() % 1 == 0) ? -1 : 1;
-	if (velocity.y == 0) velocity.y = (rand() % 1 == 0) ? -1 : 1;
 
 	if (norm == 0) this->velocity = sf::Vector2f(0, 0);
 	else
