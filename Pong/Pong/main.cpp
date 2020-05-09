@@ -22,8 +22,8 @@ int main()
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     // Constants
-    const float playerVelocity = 0.5f;
-    const float ballVelocity = 5.f;
+    const float playerVelocity = 10.f;
+    const float ballVelocity = 10.f;
     const long nanoSecondsPerMillisecond = 1000000;
     const long timePerTick = 5 * nanoSecondsPerMillisecond;
     const unsigned int windowWidth = window.getSize().x;
@@ -159,55 +159,56 @@ int main()
             }
         }
 
-        // Real-time input
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        {
-            paddleManager.positions[playerNum].y -= playerVelocity;
-            if (paddleManager.positions[playerNum].y < globalConsts::windowBufferSize)
-            {
-                paddleManager.positions[playerNum].y = globalConsts::windowBufferSize;
-            }
-            if (playerNum == 0)
-            {
-                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
-                socket.send(sent_packet, player2IP, player2Port);
-                sent_packet.clear();
-            }
-            if (playerNum == 1)
-            {
-                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
-                socket.send(sent_packet, player1IP, player1Port);
-                sent_packet.clear();
-            }
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
-            paddleManager.positions[playerNum].y -= playerVelocity * -1;
-            if (paddleManager.positions[playerNum].y + paddleHeight > windowHeight - globalConsts::windowBufferSize)
-            {
-                paddleManager.positions[playerNum].y = windowHeight - globalConsts::windowBufferSize - paddleHeight;
-            }
-
-            if (playerNum == 0)
-            {
-                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
-                socket.send(sent_packet, player2IP, player2Port);
-                sent_packet.clear();
-            }
-            if (playerNum == 1)
-            {
-                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
-                socket.send(sent_packet, player1IP, player1Port);
-                sent_packet.clear();
-            }
-
-        }
+        
 
 
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
         {
 
+            // Real-time input
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+            {
+                paddleManager.positions[playerNum].y -= playerVelocity;
+                if (paddleManager.positions[playerNum].y < globalConsts::windowBufferSize)
+                {
+                    paddleManager.positions[playerNum].y = globalConsts::windowBufferSize;
+                }
+                if (playerNum == 0)
+                {
+                    sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
+                    socket.send(sent_packet, player2IP, player2Port);
+                    sent_packet.clear();
+                }
+                if (playerNum == 1)
+                {
+                    sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
+                    socket.send(sent_packet, player1IP, player1Port);
+                    sent_packet.clear();
+                }
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+            {
+                paddleManager.positions[playerNum].y -= playerVelocity * -1;
+                if (paddleManager.positions[playerNum].y + paddleHeight > windowHeight - globalConsts::windowBufferSize)
+                {
+                    paddleManager.positions[playerNum].y = windowHeight - globalConsts::windowBufferSize - paddleHeight;
+                }
+
+                if (playerNum == 0)
+                {
+                    sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
+                    socket.send(sent_packet, player2IP, player2Port);
+                    sent_packet.clear();
+                }
+                if (playerNum == 1)
+                {
+                    sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
+                    socket.send(sent_packet, player1IP, player1Port);
+                    sent_packet.clear();
+                }
+
+            }
             // Receive Data
             if (playerNum == 0)
             {
