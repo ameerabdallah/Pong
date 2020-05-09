@@ -62,6 +62,7 @@ int main()
     sf::Int8 score[2] = { 0, 0 };
     std::string userInput;
 
+    socket.setBlocking(false);
 
     std::cout << "Press (j) to Join a game and press (h) to host one\n";
     std::cin >> userInput;
