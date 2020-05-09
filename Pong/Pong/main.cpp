@@ -341,12 +341,18 @@ int main()
                     score[1]++;
                     isServing = true;
                     playerServing = 0;
+                    sent_packet << OP_SCORE << score[0] << score[1];
+                    socket.send(sent_packet, player2IP, player2Port);
+                    sent_packet.clear();
                 }
                 if (ballPosX > windowWidth - globalConsts::windowBufferSize)
                 {
                     score[0]++;
                     isServing = true;
                     playerServing = 1;
+                    sent_packet << OP_SCORE << score[0] << score[1];
+                    socket.send(sent_packet, player2IP, player2Port);
+                    sent_packet.clear();
                 }
             }
 
