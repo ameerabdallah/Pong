@@ -105,15 +105,14 @@ int main()
         std::cout << "Port: " << myPort << "\nWaiting for someone to join...";
         while (key != 10)
         {
-            socket.receive(received_packet, player2IP, player2Port);
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
             received_packet >> key;
             if (key == 10)
             {
                 std::cout << "Joining!\n";
+                player2IP = addressToSendTo;
+                player2Port = portToSendTo;
             }
-            std::cout << key << std::endl;
-            addressToSendTo = player2IP;
-            portToSendTo = player2Port;
         }
 
     }
