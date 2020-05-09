@@ -278,15 +278,14 @@ int main()
                 ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
             }
 
-            ball.update_ball(isServing);
-            sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
-            socket.send(sent_packet, player2IP, player2Port);
-            sent_packet.clear();
+            
 
             if (playerNum == 0)
             {
-                
-
+                ball.update_ball(isServing);
+                sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
+                socket.send(sent_packet, player2IP, player2Port);
+                sent_packet.clear();
                 if (ballPosX < paddleManager.positions[0].x + paddleWidth + globalConsts::ballRadius)
                 {
                     if (ballPosY < paddleManager.positions[0].y + paddleHeight && ballPosY >= paddleManager.positions[0].y + (2 * (paddleHeight / 3)))
