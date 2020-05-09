@@ -44,8 +44,8 @@ int main()
     sf::UdpSocket socket;
     sf::Packet sent_packet;
     sf::Packet received_packet;
-    sf::IpAddress addressToSendTo;
-    unsigned short portToSendTo = 5400, myPort;
+    sf::IpAddress addressToSendTo, player1IP, player2IP;
+    unsigned short portToSendTo = 5400, player1Port, player2Port, myPort;
 
     // Views and window
     sf::View game_view;
@@ -80,12 +80,17 @@ int main()
         std::cout << "Please enter the IP Address that you would like to connect to\n";
         std::cin >> addressToSendTo;
 
+        player1IP = addressToSendTo;
+
         std::cout << "Please enter the port number:\n";
         std::cin >> portToSendTo;
+
+        player1Port = portToSendTo;
 
         std::cout << "Port to send to: " << portToSendTo << std::endl; 
 
         socket.send(sent_packet, addressToSendTo, portToSendTo);
+        
     }
     else if (userInput == "h")
     { 
@@ -99,10 +104,12 @@ int main()
         std::cout << "Port: " << myPort << "\nWaiting for someone to join...";
         while (key != 10)
         {
-            socket.receive(received_packet, addressToSendTo, portToSendTo);
+            socket.receive(received_packet, player2IP, player2Port);
             received_packet >> key;
             std::cout << "Joining!\n";
             std::cout << key << std::endl;
+            addressToSendTo = player2IP;
+            portToSendTo = player2Port;
         }
 
     }
@@ -112,7 +119,6 @@ int main()
 
     sent_packet.clear();
     received_packet.clear();
-    socket.setBlocking(false);
     // Window
     while (window.isOpen())
     {
@@ -181,16 +187,16 @@ int main()
             if (playerNum == 0)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
+                socket.send(sent_packet, player2IP, player2Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
+                std::cout << "Sending to " << player2IP << ":" << player2Port << std::endl;
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
+                socket.send(sent_packet, player1IP, player1Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
+                std::cout << "Sending to " << player1IP << ":" << player1Port << std::endl;
             }
 
         }
