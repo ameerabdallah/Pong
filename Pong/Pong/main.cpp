@@ -13,12 +13,12 @@ int main()
 {
     const std::string OP_PADDLE_POSITION = "P";
     const std::string OP_BALL_POSITION = "B";
-    const std::string OP_SCORE = "S";
     const std::string OP_BALL_VEL = "BV";
+    const std::string OP_SCORE = "S";
 
     sf::RenderWindow window(sf::VideoMode(1024, 512), "PONG");
-
     srand(time(NULL));
+
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     // Constants
@@ -39,6 +39,14 @@ int main()
     // Text Fields
     sf::Text score1;
     sf::Text score2;
+    score1.setOrigin(score1.getLocalBounds().width / 2, score1.getLocalBounds().height / 2);
+    score1.setPosition(windowWidth / 3, windowHeight / 3);
+    score1.setFont(font);
+
+    score2.setOrigin(score2.getLocalBounds().width / 2, score2.getLocalBounds().height / 2);
+    score2.setPosition(2*windowWidth / 3, windowHeight / 3);
+    score2.setFont(font);
+
 
     // Networking Stuff
     sf::UdpSocket socket;
@@ -147,7 +155,7 @@ int main()
                     {
                         ball.setVelocity(sf::Vector2f(1, 0), ballVelocity);
                     }
-                    if (playerServing == 1 && playerNum == 1)
+                    else if (playerServing == 1 && playerNum == 1)
                     {
                         ball.setVelocity(sf::Vector2f(-1, 0), ballVelocity);
                         sent_packet << OP_BALL_VEL << ball.getVelocity().x << ball.getVelocity().y;
@@ -184,6 +192,7 @@ int main()
 
         }
 
+        // Player 2 Retrieving
         if (playerNum == 1)
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
