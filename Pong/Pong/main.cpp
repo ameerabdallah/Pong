@@ -107,7 +107,10 @@ int main()
         {
             socket.receive(received_packet, player2IP, player2Port);
             received_packet >> key;
-            std::cout << "Joining!\n";
+            if (key == 10)
+            {
+                std::cout << "Joining!\n";
+            }
             std::cout << key << std::endl;
             addressToSendTo = player2IP;
             portToSendTo = player2Port;
@@ -165,16 +168,16 @@ int main()
             if (playerNum == 0)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
+                socket.send(sent_packet, player2IP, player2Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
+                std::cout << "Sending to " << player2IP << ":" << player2Port << std::endl;
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
+                socket.send(sent_packet, player1IP, player1Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
+                std::cout << "Sending to " << player1IP << ":" << player1Port << std::endl;
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -207,41 +210,50 @@ int main()
         if (playerNum == 0)
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
-            received_packet >> opCodePtr;
-            std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
-            switch (*opCodePtr)
+            if (!received_packet.endOfPacket())
             {
-            case(OP_PADDLE_POSITION):
-                received_packet >> paddleManager.positions[1].y;
-                received_packet.clear();
-                break;
+                received_packet >> opCodePtr;
+                std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
+                switch (*opCodePtr)
+                {
+                case(OP_PADDLE_POSITION):
+                    received_packet >> paddleManager.positions[1].y;
+                    received_packet.clear();
+                    break;
+                }
             }
+            
             
         }
 
         if (playerNum == 1)
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
-            received_packet >> opCodePtr;
-            std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
 
-            switch (*opCodePtr)
+            if (!received_packet.endOfPacket())
             {
-            case(OP_PADDLE_POSITION):
-                received_packet >> paddleManager.positions[0].y;
-                received_packet.clear();
-                break;
-            case(OP_BALL_POSITION):
-                received_packet >> ballPosX >> ballPosY;
-                ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
-                received_packet.clear();
-                break;
-            case(OP_SCORE):
-                received_packet >> score[0] >> score[1];
-                update_score(score1, score2, score);
-                received_packet.clear();
-                break;
+                received_packet >> opCodePtr;
+                std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
+
+                switch (*opCodePtr)
+                {
+                case(OP_PADDLE_POSITION):
+                    received_packet >> paddleManager.positions[0].y;
+                    received_packet.clear();
+                    break;
+                case(OP_BALL_POSITION):
+                    received_packet >> ballPosX >> ballPosY;
+                    ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
+                    received_packet.clear();
+                    break;
+                case(OP_SCORE):
+                    received_packet >> score[0] >> score[1];
+                    update_score(score1, score2, score);
+                    received_packet.clear();
+                    break;
+                }
             }
+            
         }
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
@@ -269,7 +281,7 @@ int main()
 
             ball.update_ball(isServing);
             sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
-            socket.send(sent_packet, addressToSendTo, portToSendTo);
+            socket.send(sent_packet, player2IP, player2Port);
             sent_packet.clear();
 
             if (playerNum == 0)
