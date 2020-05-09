@@ -159,11 +159,55 @@ int main()
             }
         }
 
+        // Real-time input
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        {
+            paddleManager.positions[playerNum].y -= playerVelocity;
+            if (paddleManager.positions[playerNum].y < globalConsts::windowBufferSize)
+            {
+                paddleManager.positions[playerNum].y = globalConsts::windowBufferSize;
+            }
+            if (playerNum == 0)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
+                socket.send(sent_packet, player2IP, player2Port);
+                sent_packet.clear();
+            }
+            if (playerNum == 1)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
+                socket.send(sent_packet, player1IP, player1Port);
+                sent_packet.clear();
+            }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        {
+            paddleManager.positions[playerNum].y -= playerVelocity * -1;
+            if (paddleManager.positions[playerNum].y + paddleHeight > windowHeight - globalConsts::windowBufferSize)
+            {
+                paddleManager.positions[playerNum].y = windowHeight - globalConsts::windowBufferSize - paddleHeight;
+            }
 
-        
+            if (playerNum == 0)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
+                socket.send(sent_packet, player2IP, player2Port);
+                sent_packet.clear();
+            }
+            if (playerNum == 1)
+            {
+                sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
+                socket.send(sent_packet, player1IP, player1Port);
+                sent_packet.clear();
+            }
+
+        }
+
+
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
         {
+
             // Receive Data
             if (playerNum == 0)
             {
@@ -274,7 +318,7 @@ int main()
                 }
                 if (ballPosY > windowHeight - globalConsts::windowBufferSize) 
                 {
-                    ball.setPosition(sf::Vector2f(ballPosX, windowHeight - globalConsts::windowBufferSize - globalConsts::ballRadius - 5));
+                    ball.setPosition(sf::Vector2f(ballPosX, globalConsts::windowBufferSize + globalConsts::ballRadius + 5));
                     ball.setVelocity(sf::Vector2f(ball.getVelocity().x / abs(ball.getVelocity().x), -ball.getVelocity().y / abs(ball.getVelocity().y)), ballVelocity);
                 }
                 if (ballPosY + globalConsts::ballRadius < globalConsts::windowBufferSize)
