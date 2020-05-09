@@ -319,7 +319,7 @@ int main()
                 }
                 if (ballPosY > windowHeight - globalConsts::windowBufferSize) 
                 {
-                    ball.setPosition(sf::Vector2f(ballPosX, globalConsts::windowBufferSize + globalConsts::ballRadius + 5));
+                    ball.setPosition(sf::Vector2f(ballPosX, windowHeight - globalConsts::windowBufferSize - globalConsts::ballRadius - 5));
                     ball.setVelocity(sf::Vector2f(ball.getVelocity().x / abs(ball.getVelocity().x), -ball.getVelocity().y / abs(ball.getVelocity().y)), ballVelocity);
                 }
                 if (ballPosY + globalConsts::ballRadius < globalConsts::windowBufferSize)
