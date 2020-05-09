@@ -161,6 +161,56 @@ int main()
 
         
 
+        // Receive Data
+        if (playerNum == 0)
+        {
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
+            if (!received_packet.endOfPacket())
+            {
+                received_packet >> opCode;
+                if (opCode == OP_PADDLE_POSITION)
+                {
+                    received_packet >> paddleManager.positions[1].y;
+                    received_packet.clear();
+                }
+                if (opCode == OP_BALL_VEL)
+                {
+                    float ballVelocityX, ballVelocityY;
+                    received_packet >> ballVelocityX >> ballVelocityY;
+                    ball.setVelocity(sf::Vector2f(ballVelocityX, ballVelocityY), ballVelocity);
+                }
+            }
+
+
+        }
+
+        if (playerNum == 1)
+        {
+            socket.receive(received_packet, addressToSendTo, portToSendTo);
+
+            if (!received_packet.endOfPacket())
+            {
+                received_packet >> opCode;
+                if (opCode == OP_PADDLE_POSITION)
+                {
+                    received_packet >> paddleManager.positions[0].y;
+                    received_packet.clear();
+                }
+                if (opCode == OP_BALL_POSITION)
+                {
+                    received_packet >> ballPosX >> ballPosY;
+                    ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
+                    received_packet.clear();
+                }
+                if (opCode == OP_SCORE)
+                {
+                    received_packet >> score[0] >> score[1];
+                    update_score(score1, score2, score);
+                    received_packet.clear();
+                }
+            }
+
+        }
 
         // Game Logic
         while ((std::chrono::steady_clock::now() - begin).count() >= timePerTick)
@@ -206,56 +256,6 @@ int main()
                     sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                     socket.send(sent_packet, player1IP, player1Port);
                     sent_packet.clear();
-                }
-
-            }
-            // Receive Data
-            if (playerNum == 0)
-            {
-                socket.receive(received_packet, addressToSendTo, portToSendTo);
-                if (!received_packet.endOfPacket())
-                {
-                    received_packet >> opCode;
-                    if (opCode == OP_PADDLE_POSITION)
-                    {
-                        received_packet >> paddleManager.positions[1].y;
-                        received_packet.clear();
-                    }
-                    if (opCode == OP_BALL_VEL)
-                    {
-                        float ballVelocityX, ballVelocityY;
-                        received_packet >> ballVelocityX >> ballVelocityY;
-                        ball.setVelocity(sf::Vector2f(ballVelocityX, ballVelocityY), ballVelocity);
-                    }
-                }
-
-
-            }
-
-            if (playerNum == 1)
-            {
-                socket.receive(received_packet, addressToSendTo, portToSendTo);
-
-                if (!received_packet.endOfPacket())
-                {
-                    received_packet >> opCode;
-                    if (opCode == OP_PADDLE_POSITION)
-                    {
-                        received_packet >> paddleManager.positions[0].y;
-                        received_packet.clear();
-                    }
-                    if (opCode == OP_BALL_POSITION)
-                    {
-                        received_packet >> ballPosX >> ballPosY;
-                        ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
-                        received_packet.clear();
-                    }
-                    if (opCode == OP_SCORE)
-                    {
-                        received_packet >> score[0] >> score[1];
-                        update_score(score1, score2, score);
-                        received_packet.clear();
-                    }
                 }
 
             }
