@@ -160,12 +160,14 @@ int main()
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
                 sent_packet.clear();
+                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
                 sent_packet.clear();
+                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -181,13 +183,14 @@ int main()
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
                 sent_packet.clear();
-
+                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                 socket.send(sent_packet, addressToSendTo, portToSendTo);
                 sent_packet.clear();
+                std::cout << "Sending to " << addressToSendTo << ":" << portToSendTo << std::endl;
             }
 
         }
@@ -198,10 +201,11 @@ int main()
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
             received_packet >> opCodePtr;
+            std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
             switch (*opCodePtr)
             {
             case(OP_PADDLE_POSITION):
-                received_packet >> opCodePtr >> paddleManager.positions[1].y;
+                received_packet >> paddleManager.positions[1].y;
                 received_packet.clear();
                 break;
             }
@@ -212,20 +216,21 @@ int main()
         {
             socket.receive(received_packet, addressToSendTo, portToSendTo);
             received_packet >> opCodePtr;
+            std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
 
             switch (*opCodePtr)
             {
             case(OP_PADDLE_POSITION):
-                received_packet >> opCodePtr >> paddleManager.positions[0].y;
+                received_packet >> paddleManager.positions[0].y;
                 received_packet.clear();
                 break;
             case(OP_BALL_POSITION):
-                received_packet >> opCodePtr >> ballPosX >> ballPosY;
+                received_packet >> ballPosX >> ballPosY;
                 ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                 received_packet.clear();
                 break;
             case(OP_SCORE):
-                received_packet >> opCodePtr >> score[0] >> score[1];
+                received_packet >> score[0] >> score[1];
                 update_score(score1, score2, score);
                 received_packet.clear();
                 break;
