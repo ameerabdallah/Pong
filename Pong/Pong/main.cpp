@@ -22,8 +22,8 @@ int main()
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     // Constants
-    const float playerVelocity = 10.f;
-    const float ballVelocity = 10.f;
+    const float playerVelocity = 7.f;
+    const float ballVelocity = 7.f;
     const long nanoSecondsPerMillisecond = 1000000;
     const long timePerTick = 5 * nanoSecondsPerMillisecond;
     const unsigned int windowWidth = window.getSize().x;
