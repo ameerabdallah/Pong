@@ -111,6 +111,7 @@ int main()
     float paddleHeight = paddleManager.paddle[0].getSize().y;
 
     sent_packet.clear();
+    received_packet.clear();
     socket.setBlocking(false);
     // Window
     while (window.isOpen())
@@ -200,7 +201,8 @@ int main()
             switch (*opCodePtr)
             {
             case(OP_PADDLE_POSITION):
-                received_packet >> paddleManager.positions[1].y;
+                received_packet >> opCodePtr >> paddleManager.positions[1].y;
+                received_packet.clear();
                 break;
             }
             
@@ -214,15 +216,18 @@ int main()
             switch (*opCodePtr)
             {
             case(OP_PADDLE_POSITION):
-                received_packet >> paddleManager.positions[0].y;
+                received_packet >> opCodePtr >> paddleManager.positions[0].y;
+                received_packet.clear();
                 break;
             case(OP_BALL_POSITION):
-                received_packet >> ballPosX >> ballPosY;
+                received_packet >> opCodePtr >> ballPosX >> ballPosY;
                 ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
+                received_packet.clear();
                 break;
             case(OP_SCORE):
-                received_packet >> score[0] >> score[1];
+                received_packet >> opCodePtr >> score[0] >> score[1];
                 update_score(score1, score2, score);
+                received_packet.clear();
                 break;
             }
         }
@@ -250,12 +255,14 @@ int main()
                 ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
             }
 
+            ball.update_ball(isServing);
+            sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
+            socket.send(sent_packet, addressToSendTo, portToSendTo);
+            sent_packet.clear();
+
             if (playerNum == 0)
             {
-                ball.update_ball(isServing);
-                sent_packet << OP_BALL_POSITION << ballPosX << ballPosY;
-                socket.send(sent_packet, addressToSendTo, portToSendTo);
-                sent_packet.clear();
+                
 
                 if (ballPosX < paddleManager.positions[0].x + paddleWidth + globalConsts::ballRadius)
                 {
@@ -289,6 +296,7 @@ int main()
                 }
                 if (ballPosY > windowHeight - globalConsts::windowBufferSize) 
                 {
+                    ball.setPosition(sf::Vector2f(ballPosX, globalConsts::windowBufferSize + globalConsts::ballRadius + 5));
                     ball.setVelocity(sf::Vector2f(ball.getVelocity().x / abs(ball.getVelocity().x), -ball.getVelocity().y / abs(ball.getVelocity().y)), ballVelocity);
                 }
                 if (ballPosY + globalConsts::ballRadius < globalConsts::windowBufferSize)
