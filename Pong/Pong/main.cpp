@@ -11,9 +11,10 @@ void update_score(sf::Text& score1, sf::Text& score2, sf::Int8 score[2]);
 
 int main()
 {
-    const char OP_PADDLE_POSITION = 'P';
-    const char OP_BALL_POSITION = 'B';
-    const char OP_SCORE = 'S';
+    const std::string OP_PADDLE_POSITION = "P";
+    const std::string OP_BALL_POSITION = "B";
+    const std::string OP_SCORE = "S";
+    const std::string OP_BALL_VEL = "BV";
 
     sf::RenderWindow window(sf::VideoMode(1024, 512), "PONG");
 
@@ -28,8 +29,7 @@ int main()
     const unsigned int windowWidth = window.getSize().x;
     const unsigned int windowHeight = window.getSize().y;
 
-    char opCode = ' ';
-    char* opCodePtr = &opCode;
+    std::string opCode = "";
 
     // Game font
     sf::Font font;
@@ -150,6 +150,7 @@ int main()
                     if (playerServing == 1 && playerNum == 1)
                     {
                         ball.setVelocity(sf::Vector2f(-1, 0), ballVelocity);
+                        
                     }
                     break;
                 }
@@ -169,14 +170,12 @@ int main()
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
                 socket.send(sent_packet, player2IP, player2Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << player2IP << ":" << player2Port << std::endl;
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                 socket.send(sent_packet, player1IP, player1Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << player1IP << ":" << player1Port << std::endl;
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -192,14 +191,12 @@ int main()
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[0].y;
                 socket.send(sent_packet, player2IP, player2Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << player2IP << ":" << player2Port << std::endl;
             }
             if (playerNum == 1)
             {
                 sent_packet << OP_PADDLE_POSITION << paddleManager.positions[1].y;
                 socket.send(sent_packet, player1IP, player1Port);
                 sent_packet.clear();
-                std::cout << "Sending to " << player1IP << ":" << player1Port << std::endl;
             }
 
         }
@@ -211,14 +208,11 @@ int main()
             socket.receive(received_packet, addressToSendTo, portToSendTo);
             if (!received_packet.endOfPacket())
             {
-                received_packet >> opCodePtr;
-                std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
-                switch (*opCodePtr)
+                received_packet >> opCode;
+                if(opCode == OP_PADDLE_POSITION)
                 {
-                case(OP_PADDLE_POSITION):
                     received_packet >> paddleManager.positions[1].y;
                     received_packet.clear();
-                    break;
                 }
             }
             
@@ -231,25 +225,23 @@ int main()
 
             if (!received_packet.endOfPacket())
             {
-                received_packet >> opCodePtr;
-                std::cout << "Receiving from " << addressToSendTo << ":" << portToSendTo << std::endl;
-
-                switch (*opCodePtr)
+                received_packet >> opCode;
+                if (opCode == OP_PADDLE_POSITION)
                 {
-                case(OP_PADDLE_POSITION):
                     received_packet >> paddleManager.positions[0].y;
                     received_packet.clear();
-                    break;
-                case(OP_BALL_POSITION):
+                }
+                if (opCode == OP_BALL_POSITION)
+                {
                     received_packet >> ballPosX >> ballPosY;
                     ball.setPosition(sf::Vector2f(ballPosX, ballPosY));
                     received_packet.clear();
-                    break;
-                case(OP_SCORE):
+                }
+                if (opCode == OP_SCORE)
+                {
                     received_packet >> score[0] >> score[1];
                     update_score(score1, score2, score);
                     received_packet.clear();
-                    break;
                 }
             }
             
