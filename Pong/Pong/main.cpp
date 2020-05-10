@@ -151,7 +151,6 @@ int main()
                 switch (event.key.code)
                 {
                 case(sf::Keyboard::Space):
-                    std::cout << playerServing << "\n";
                     isServing = false;
                     if (playerServing == 0 && playerNum == 0)
                     {
