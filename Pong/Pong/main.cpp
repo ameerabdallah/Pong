@@ -15,6 +15,7 @@ int main()
     const std::string OP_BALL_POSITION = "B";
     const std::string OP_BALL_VEL = "BV";
     const std::string OP_SCORE = "S";
+    const std::string OP_PLAYER_SERVING = "PS";
 
     sf::RenderWindow window(sf::VideoMode(1024, 512), "PONG");
     srand(time(NULL));
@@ -66,7 +67,7 @@ int main()
     float waitingToConnect = true;
     bool isServing = true;
     int playerNum = 0;
-    int playerServing = 0;
+    sf::Int8 playerServing = 0;
     sf::Int8 score[2] = { 0, 0 };
     std::string userInput;
 
@@ -218,6 +219,11 @@ int main()
                     update_score(score1, score2, score);
                     received_packet.clear();
                 }
+                if (opCode == OP_PLAYER_SERVING)
+                {
+                    received_packet >> playerServing;
+                    received_packet.clear();
+                }
             }
 
         }
@@ -342,6 +348,11 @@ int main()
                     score[1]++;
                     isServing = true;
                     playerServing = 0;
+                    // Player serving data
+                    sent_packet << OP_PLAYER_SERVING << playerServing;
+                    socket.send(sent_packet, player2IP, player2Port);
+                    sent_packet.clear();
+                    // Player score data
                     sent_packet << OP_SCORE << score[0] << score[1];
                     socket.send(sent_packet, player2IP, player2Port);
                     sent_packet.clear();
@@ -351,6 +362,11 @@ int main()
                     score[0]++;
                     isServing = true;
                     playerServing = 1;
+                    // Player serving data
+                    sent_packet << OP_PLAYER_SERVING << playerServing;
+                    socket.send(sent_packet, player2IP, player2Port);
+                    sent_packet.clear();
+                    // Player score data
                     sent_packet << OP_SCORE << score[0] << score[1];
                     socket.send(sent_packet, player2IP, player2Port);
                     sent_packet.clear();
