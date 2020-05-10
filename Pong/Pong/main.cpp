@@ -160,7 +160,7 @@ int main()
                     {
                         ball.setVelocity(sf::Vector2f(-1, 0), ballVelocity);
                         sent_packet << OP_BALL_VEL << ball.getVelocity().x << ball.getVelocity().y;
-                        socket.send(sent_packet, player2IP, player2Port);
+                        socket.send(sent_packet, player1IP, player1Port);
                         sent_packet.clear();
                     }
                     break;
